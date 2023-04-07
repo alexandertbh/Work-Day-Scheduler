@@ -6,91 +6,43 @@ var saveBtn = document.querySelectorAll(".saveBtn");
 var hourEl = document.getElementById("hourSection");
 var description = document.querySelectorAll(".description");
 
-//var to index off of
-var data = 3;
+//var for object storage
+var objectStore = {};
 
 //vars for current and updated time in hours
 var currentHour = dayjs().format("HH");
-// hourPlus = dayjs().add(dayjs.duration({ hour: 1 }));
-// console.log(currentHour + hourPlus);
-
-// var a = dayjs.duration(1, "d");
-// var b = dayjs.duration(2, "d");
-
-// a.add(b).days(); // 3
-// a.add({ days: 2 }).days();
-// a.add(2, "days");
-// console.log(a);
 
 // day.js for today header
 var today = dayjs();
-today.format("MMM D, YYYY");
+today.format("dddd", "MMMM");
 console.log(today);
 header.textContent = today;
 
-//day.js hour plus and minus test
-
-//Function GetAPI
-
-//function save data
-//declare time, day, and input variables in an object
-// save them based on their index point
-
+//function for savinginput
 function saveInput(event) {
   for (var i = 0; i < saveBtn.length; i++) {
-    // console.log([description[i].value]);
-    var savedItems = [{ [i]: description[i].value }];
-    console.log(savedItems);
-    localStorage.setItem("Schedule Items", JSON.stringify(savedItems));
+    objectStore[i] = description[i].value;
+    localStorage.setItem("Schedule Items", JSON.stringify(objectStore));
   }
 }
-
+//functuons for pull and parsing data from local storage then appending onto the line items
+var lastItems = JSON.parse(localStorage.getItem("Schedule Items"));
 function render() {
+  var lastItems = JSON.parse(localStorage.getItem("Schedule Items"));
+  console.log(lastItems);
   for (var i = 0; i < description.length; i++) {
-    var lastItems = localStorage.getItem(
-      "Schedule Items",
-      JSON.parse([description[i].value])
-    );
+    if (lastItems[i] != " ") {
+      description.textContent = lastItems[i];
+      description[i].append(lastItems[i]);
+    }
   }
 }
 
-// render();
-//function add times to each section
-// for loop that iterates the time in each section + 1 hour using day.js
+//call the render function to pull info from local storage
+render();
 
-//function render previous inputs
-//parse local storage
-//text.content onto the correct inputs based on index position
-
-//API Syntax + forloop
-// var userContainer = document.getElementById("users");
-// var fetchButton = document.getElementById("fetch-button");
-
-// function getApi() {
-//   var requestUrl = "https://api.github.com/users?per_page=5";
-
-//   fetch(requestUrl)
-//     .then(function (response) {
-//       return response.json();
-//     })
-//     .then(function (data) {
-//       for (var i = 0; i < data.length; i++) {
-//         var userName = document.createElement("h3");
-//         var gitLink = document.createElement("a");
-//         gitLink.href = data[i].html_url;
-//         userName.textContent = data[i].login;
-//         gitLink.textContent = data[i].html_url;
-//         userContainer.append(userName);
-//         userContainer.append(gitLink);
-//       }
-//     });
-// }
-// fetchButton.addEventListener("click", getApi);
-
-//add event listener for clicking save icon for local storage
+//for loop for the event listeners add event listener for clicking save icon for local storage
 
 for (let i = 0; i < saveBtn.length; i++) {
   saveBtn[i].addEventListener("click", saveInput);
 }
-
-// create individual divs and do current time plus one and minus one
